@@ -1,0 +1,58 @@
+import React, { useRef } from 'react'
+import { Link } from 'react-router-dom'
+import axiosClient from '../axios-client';
+import { useStateContext } from '../contexts/ContextProvider';
+
+export default function Signup() {
+
+    // using useRef to get data from the form to the server
+    const nameRef = useRef();
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const passwordConfirmationRef = useRef();
+
+    const {setUser,setToken} = useStateContext()
+
+    const onSubmit = (ev)=>{
+        ev.preventDefault()
+        const payload ={
+            name: nameRef.current.value,
+            email:emailRef.current.value,
+            password:passwordRef.current.value,
+            password_Confirmation: passwordConfirmationRef.current.value,
+        }
+
+        axiosClient.post('/signup',payload)
+        .then(({data})=>{
+            setUser(data.user)
+             setToken(data.token)
+        })
+        .catch(err=>{
+            const response = err.response;
+            if(response && response.status == 422){
+                response.data.errors;
+            }
+        })
+    }
+
+
+  return (
+    <div className='login-signup-form animated fadeInDown'>
+        <div className="form">
+            <form  onSubmit={onSubmit}>
+                <h1 className='title'>
+                    Signup for free
+                </h1>
+                <input ref={nameRef} placeholder='Full Name' required/>
+                <input ref={emailRef} type="email" placeholder='Email' required/>
+                <input ref={passwordRef} type="password" placeholder='Password' required/>
+                <input ref={passwordConfirmationRef} type="password" placeholder='Password Confirmation' required/>
+                <button className='btn btn-bock'>Signup </button>
+                <p className='message'>
+                    Already Registerd? <Link to="/login">Sign in</Link>
+                </p>
+            </form>
+        </div>
+    </div>
+  )
+}
