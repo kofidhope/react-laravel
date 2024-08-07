@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axiosClient from '../axios-client';
 import { useStateContext } from '../contexts/ContextProvider';
@@ -10,7 +10,7 @@ export default function Signup() {
     const emailRef = useRef();
     const passwordRef = useRef();
     const passwordConfirmationRef = useRef();
-
+    const [errors, setErrors] = useState(null);
     const {setUser,setToken} = useStateContext()
 
     const onSubmit = (ev)=>{
@@ -43,10 +43,10 @@ export default function Signup() {
                 <h1 className='title'>
                     Signup for free
                 </h1>
-                <input ref={nameRef} placeholder='Full Name' required/>
-                <input ref={emailRef} type="email" placeholder='Email' required/>
-                <input ref={passwordRef} type="password" placeholder='Password' required/>
-                <input ref={passwordConfirmationRef} type="password" placeholder='Password Confirmation' required/>
+                <input ref={nameRef} placeholder='Full Name' />
+                <input ref={emailRef} type="email" placeholder='Email' />
+                <input ref={passwordRef} type="password" placeholder='Password' />
+                <input ref={passwordConfirmationRef} type="password" placeholder='Password Confirmation'/>
                 <button className='btn btn-bock'>Signup </button>
                 <p className='message'>
                     Already Registerd? <Link to="/login">Sign in</Link>
