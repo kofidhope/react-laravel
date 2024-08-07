@@ -11,38 +11,57 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function signup(SignupRequest $request){
+    public function signup(SignupRequest $request)
+    {
+        // Get validated data
         $data = $request->validated();
-        /** @var \App\Models\User $user */
-       $user= User::create([
+            /** @var \App\Models\User $user */
+        // Create user and hash the password
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password'])
+            'password' => bcrypt($data['password']),
         ]);
 
-        $user = $user->createToken('main')->plainTextToken;
+        // Generate a token for the user
+        $token = $user->createToken('main')->plainTextToken;
 
-        return response(compact('user','token'));
+        // Return response with user and token
+        return response(compact('user', 'token'));
     }
 
-    public function login(LoginRequest $request){
-          $credentials = $request->validated();
-        if(Auth::attempt($credentials)){
+    public function login(LoginRequest $request)
+    {
+        // Get validated data
+        $credentials = $request->validated();
+
+        // Attempt to log in with provided credentials
+        if (!Auth::attempt($credentials)) {
             return response([
-                'message'=> 'Provided email address or password is incorect'
-            ]);
+                'message' => 'Provided email address or password is incorrect'
+            ], 422);
         }
-         /** @var user $user */
+        /** @var User $user */
+        // Get authenticated user
         $user = Auth::user();
-       $token=  $user->createToken('main')->plainTextToken;
-       return response(compact('user','token'));
+
+        // Generate a token for the user
+        $token = $user->createToken('main')->plainTextToken;
+
+        // Return response with user and token
+        return response(compact('user', 'token'));
     }
 
-    public function logout(Request $request){
-        /** @var user $user */
+    public function logout(Request $request)
+    {
+        // Get authenticated user
         $user = $request->user();
+
+        // Delete the user's current access token
         $user->currentAccessToken()->delete();
-        return response('',204);
+
+        // Return a 204 No Content response
+        return response('', 204);
     }
 
 }
