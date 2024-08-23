@@ -66,10 +66,10 @@ export default function Users() {
                }
                {!loading &&
                     <tbody>
-                        {users.map(u=>(
+                        {users.map(u=> (
                             <tr>
                                 <td>{u.id}</td>
-                                <td>{u.email}</td>
+                                <td>{u.name}</td>
                                 <td>{u.email}</td>
                                 <td>{u.created_at} </td>
                                 <td>
